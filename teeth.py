@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 import tensorflow as tf
-from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import load_img, img_to_array
 
