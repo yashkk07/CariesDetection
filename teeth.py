@@ -5,8 +5,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 import tensorflow as tf
+from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import load_img, img_to_array
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # Define dataset paths
 dataset_path="teeth_dataset"
@@ -173,3 +175,83 @@ no_caries_predictions = generate_predictions(test_without_caries_path, model, cl
 print("\nPredictions for No-Caries Images:")
 for img_name, pred_class, prob in no_caries_predictions:
     print(f"Image: {img_name}, Predicted Class: {pred_class}, Probability: {prob:.2f}")
+
+
+# Count the images in caries and without caries directories
+caries_count = len(os.listdir(caries_path))
+without_caries_count = len(os.listdir(without_caries_path))
+
+# Data for the bar graph
+categories = ['Caries', 'Without Caries']
+counts = [caries_count, without_caries_count]
+
+# Plotting the bar graph
+plt.figure(figsize=(8, 6))
+plt.bar(categories, counts, color=['red', 'green'])
+plt.title('Count of Images in Training Dataset', fontsize=16)
+plt.xlabel('Category', fontsize=14)
+plt.ylabel('Number of Images', fontsize=14)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Adding count labels above bars
+for i, count in enumerate(counts):
+    plt.text(i, count + 2, str(count), ha='center', fontsize=12, color='black')
+
+plt.show()
+
+# Generate prediction probabilities for the test dataset
+def get_prediction_probabilities(generator, model):
+    probabilities = []
+    for batch, _ in generator:
+        batch_probabilities = model.predict(batch)
+        probabilities.extend(batch_probabilities.flatten())  # Flatten to 1D list
+        if len(probabilities) >= generator.samples:  # Stop after processing all samples
+            break
+    return probabilities
+
+# Get prediction probabilities from the test generator
+test_probabilities = get_prediction_probabilities(test_generator, model)
+
+# Plot the histogram of prediction probabilities
+plt.figure(figsize=(8, 6))
+plt.hist(test_probabilities, bins=20, color='blue', alpha=0.7, edgecolor='black')
+plt.title('Distribution of Prediction Probabilities', fontsize=16)
+plt.xlabel('Prediction Probability', fontsize=14)
+plt.ylabel('Frequency', fontsize=14)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+# Save the plot
+histogram_path = os.path.join(dataset_path, 'plots/probability_histogram.png')
+plt.savefig(histogram_path)
+plt.show()
+
+print(f"Prediction probability histogram saved to {histogram_path}")
+
+# Get true labels and predictions for the test dataset
+true_labels = test_generator.classes
+predictions = model.predict(test_generator)
+predicted_labels = (predictions > 0.5).astype(int).flatten()  # Thresholding at 0.5
+
+# Calculate the confusion matrix
+cm = confusion_matrix(true_labels, predicted_labels)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_labels.keys())
+
+# Plot the confusion matrix
+plt.figure(figsize=(8, 6))
+disp.plot(cmap='Blues', values_format='d', ax=plt.gca())
+plt.title('Confusion Matrix', fontsize=16)
+plt.xlabel('Predicted Labels', fontsize=14)
+plt.ylabel('True Labels', fontsize=14)
+plt.xticks(fontsize=12)
+plt.yticks(fontsize=12)
+
+# Save the plot
+confusion_matrix_path = os.path.join(dataset_path, 'plots/confusion_matrix.png')
+plt.savefig(confusion_matrix_path)
+plt.show()
+
+print(f"Confusion matrix plot saved to {confusion_matrix_path}")
