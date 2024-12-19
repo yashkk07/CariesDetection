@@ -1,5 +1,3 @@
-# CariesDetection
-
 # Teeth Caries Classifier
 
 This project is a deep learning-based application that classifies images of teeth into two categories: **caries** (tooth decay) and **without caries**. The classifier is implemented using Convolutional Neural Networks (CNNs) and trained on a dataset of teeth images. The project also includes data augmentation, visualization, and performance evaluation.
@@ -60,8 +58,8 @@ The model is compiled with the Adam optimizer, binary cross-entropy loss, and ac
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/teeth-caries-classifier.git
-   cd teeth-caries-classifier
+   git clone https://github.com/yashkk07/CariesDetection
+   cd CariesDetection
    ```
 
 2. Install required libraries:
@@ -71,36 +69,35 @@ The model is compiled with the Adam optimizer, binary cross-entropy loss, and ac
 
 3. Place your dataset in the `teeth_dataset` directory, structured as shown above.
 
-4. Run the training script:
+4. Run the training script and evaluate the model on the test set:
    ```bash
-   python train_classifier.py
-   ```
-
-5. Evaluate the model on the test set:
-   ```bash
-   python evaluate_model.py
+   python teeth.py
    ```
 
 ## Results and Visualizations
 
 ### Accuracy and Loss Plots
 
-The training and validation accuracy and loss are plotted and saved in the `teeth_dataset/plots` directory:
+The training and validation accuracy and loss are plotted and saved in the `plots` directory:
 
-- `accuracy_plot.png`
 - `loss_plot.png`
 
 ### Class Distribution
 
 A bar graph displaying the number of images in each category is saved as `class_distribution.png`.
 
+### Example Classes
+
+Sample images from the test set with their labels are displayed.
+
 ### Prediction Probabilities
 
 The distribution of prediction probabilities is visualized in `probability_histogram.png`.
 
-### Example Predictions
+### Confusion Matrix
 
-Sample images from the test set with their predicted labels and probabilities are displayed during evaluation.
+The confusion matrix summarizes the model's performance by showing true positives, true negatives, false positives, and false negatives. It helps evaluate the model's accuracy and balance.  
+Saved as `confusion_matrix.png`.
 
 ## Files and Directory Structure
 
